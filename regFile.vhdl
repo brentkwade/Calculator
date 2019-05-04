@@ -30,3 +30,21 @@ architecture behavioral of regFile is
             R1 when "01",
             R2 when "10",
             R3 when others;
+
+        process (CLK) is
+            begin
+                if (CLK'event and CLK='1') then
+                    if (WE='1') then
+                        if (RW="00") then
+                            R0 <= WD;
+                        elsif (RW="01") then
+                            R1 <= WD;
+                        elsif (RW="10") then
+                            R2 <= WD;
+                        elsif (RW="11") then
+                            R3 <= WD;
+                        end if;
+                    end if;
+                end if;
+            end process;
+        end architecture;
