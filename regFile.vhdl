@@ -4,13 +4,13 @@ use ieee.std_logic_1164.all;
 entity regFile is
     port(
         CLK: in std_logic;
-        regA: in std_logic(1 downto 0);
-        regB: in std_logic(1 downto 0);
-        regW: in std_logic(7 downto 0);
-        WD: in std_logic;
+        regA: in std_logic_vector(1 downto 0);
+        regB: in std_logic_vector(1 downto 0);
+        regW: in std_logic_vector(7 downto 0);
+        WD: in std_logic_vector;
         WE: in std_logic;
-        regAOUT: out std_logic;
-        regBOUT: out std_logic
+        regAOUT: out std_logic_vector(7 downto 0);
+        regBOUT: out std_logic_vector(7 downto 0)
     );
 end regFile;
 
