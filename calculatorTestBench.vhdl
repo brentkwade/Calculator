@@ -2,8 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use std.textio.all;
 
-
-entity calculatorTestBench is
+entity calculatorTestBench is --test bench has no interface
 end entity calculatorTestBench;
 
 architecture structural of calculatorTestBench is
@@ -34,10 +33,10 @@ begin
         read(testLine, testVector); 
         I <= to_stdlogicvector(testVector); 
 
-        
         wait for 1 ns;
         clock <= '1';
         wait for 1 ns;
+
       end loop;
       wait;
     end process;
