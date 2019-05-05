@@ -59,7 +59,7 @@ begin
     display <= not (I(7) or I(6) or I(5));
   
     with display select regA <=
-      I(3 downto 2) when '0',
+      I(1 downto 0) when '0',
       I(4 downto 3) when others;
   
     --Sign extedend the immediate value.
