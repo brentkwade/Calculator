@@ -3,22 +3,22 @@ use ieee.std_logic_1164.all;
 
 entity flipFlop is
    port(
-      clk : in std_logic;
-      R : in std_logic;
-      D : in std_logic;
+      clock : in std_logic;
+      reset : in std_logic;
+      data : in std_logic;
       Q : out std_logic
    );
 end entity flipFlop;
 architecture behavioral of flipFlop is
   signal qt : std_logic :='1';
 begin
-   process (clk,R) is
+   process (clock, reset) is
    begin
-      if (R = '1') then
+      if (reset = '1') then
         qt <= '0';
-      elsif clk'event and clk = '1' then
-          qt <= D;
+      elsif clock'event and clock = '1' then
+          qt <= data;
       end if;
    end process;
-   Q<=qt;
+   Q <= qt;
 end architecture behavioral;
