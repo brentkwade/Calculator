@@ -7,18 +7,18 @@ end entity calculatorTestBench;
 
 architecture structural of calculatorTestBench is
 
-component calculator is
+component single_cycle_calc is
   port(
     I : in std_logic_vector(7 downto 0); 
     clock : in std_logic
   );
-end component calculator;
+end component single_cycle_calc;
 
 signal I : std_logic_vector(7 downto 0);
 signal clock : std_logic;
 
 begin
-    calculator_0 : calculator port map(I, clock);
+    calculator_0 : single_cycle_calc port map(I, clock);
 
     process
       file testFile : text is in "calculatorTest.txt"; 
