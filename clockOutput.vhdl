@@ -5,8 +5,8 @@ entity clockOutput is
   port(
     clockIn : in std_logic;
     clockOut : out std_logic;
-    set : in std_logic;
-    trigger : in std_logic
+    S : in std_logic;
+    compareout : in std_logic
   );
 end entity clockOutput;
 
@@ -15,14 +15,14 @@ architecture structural of clockOutput is
      port(
       clock : in std_logic;
       reset : in std_logic;
-      data : in std_logic;
+      D : in std_logic;
       Q : out std_logic
      );
   end component flipFlop;
   component dLatch is
      port(
-      enable : in std_logic;
-      data : in std_logic;
+      E : in std_logic;
+      D : in std_logic;
       Q : out std_logic
      );
   end component dLatch;

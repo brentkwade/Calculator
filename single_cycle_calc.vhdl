@@ -25,10 +25,10 @@ architecture operations of calc is
 
     component clockOutput is
         port(
-            clk_out : in std_logic; --clk before it goes through the mux
-            clk_in : out std_logic; --clk after it goes through the mux
+            clk_in : in std_logic; --clk before it goes through the mux
+            clk_out : out std_logic; --clk after it goes through the mux
             Skip2 : in std_logic; -- this indicates bit I<4>
-            comp_skip : in std_logic -- result of compare and opcode
+            comp_filter : in std_logic -- result of compare and opcode
 
         );
     end component clockOutput;
@@ -48,8 +48,8 @@ architecture operations of calc is
     end component registers;
 
   --All necessary signals within the calculator
-signal comp_skip, output_clk, WE, display, WDselect, compareout : std_logic;
-
+signal comp_op, output_clk, WE, display, WDselect, comp_out, comp_filter : std_logic;
+signal Q : std_logic :=> '1';
 signal regA, regB, regW : std_logic_vector (1 downto 0);
 signal WD, signextend, ALUout, regAOUT, regBOUT (7 downto 0);
 
@@ -58,7 +58,7 @@ begin
       --Assigning ports 
     regfile : registers port map (regA, regB, regW, WD, output_clk, WE, RAOUT, RBOUT)
     ALU : addSub port map (regAOUT, regBOUT, I(7), ALUout);
-    clk_Output : clockOutput port map(clk, clkfilter, I(4), cskip);
+    clk_Output : clockOutput port map(clk, clk_filter, I(4), comp_filter);
 
     --RegA is the RS register, and regW is the RD; shown on schematic
     regA <= I(3 downto 2);
@@ -86,11 +86,11 @@ begin
     --Based on the opcode, says whether info is saved or not
     WE <= I(7) or I(6);
   
-    --Used to comp_skip the skip instruction logic.
-    comp_skip <= (not I(7)) and (not I(6)) and I(5) and cmp_out;
+    --Used to calculate value of the the opcode then used for compare out.
+    comp_out <= (not I(7)) and (not I(6)) and I(5) and cmp_raw;
   
     --Compares the RS and RT registers. Returns 1 if they are EXACTLY the same
-    cmp_out <= not ((regA(0)) xor (regB(0))) and
+    cmp_raw <= not ((regA(0)) xor (regB(0))) and
               not ((regA(1)) xor (regB(1))) and  
               not ((regA(2)) xor (regB(2))) and 
               not ((regA(3)) xor (regB(3))) and 
@@ -98,13 +98,16 @@ begin
               not ((regA(5)) xor (regB(5))) and 
               not ((regA(6)) xor (regB(6))) and  
               not ((regA(7)) xor (regB(7))); 
+
+    --Xors the value output of the 2nd flip flop with compare
+    comp_filter <= (comp_raw XOR Q)
   
     --This determines the display function output
-    process(clkfilter,display) is
+    process(clk_filter,display) is
 
       variable print_reg : integer;
       begin
-        if((clkfilter'event and clkfilter = '1') and (display = '1')) then
+        if((clk_filter'event and clk_filter = '1') and (display = '1')) then
           print_reg := to_integer(signed(RAOUT));
   
           --Make the ouput right aligned.
