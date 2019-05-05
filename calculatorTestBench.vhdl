@@ -21,11 +21,10 @@ begin
     calculator_0 : single_cycle_calc port map(I, clock);
 
     process
-      file testFile : text is in "calculatorTest.txt"; 
+      file testFile : text is in "test.txt"; 
       variable testLine : line;
       variable testVector : bit_vector(7 downto 0);
     begin
-      wait for 999 ps; 
       while (not(endfile(testFile))) loop 
         clock <= '0';
 
