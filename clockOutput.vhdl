@@ -6,7 +6,7 @@ entity clockOutput is
     clockIn : in std_logic;
     clockOut : out std_logic;
     S : in std_logic;
-    compareout : in std_logic
+    compare_filter : in std_logic
   );
 end entity clockOutput;
 
@@ -27,17 +27,17 @@ architecture structural of clockOutput is
      );
   end component dLatch;
 
-signal Q0 : std_logic := '1';
-signal Q1, Q2, Q4, data3, data4 : std_logic := '1';
-signal Q3 : std_logic := '1';
-begin
-  flipFlop0 : flipFlop port map(clockIn, Q3, '1', Q0);
-  flipFlop1 : flipFlop port map(clockIn, Q4, Q0, Q1);
-  flipFlop2 : flipFlop port map(clockIn, '0', Q1, Q2);
-  dLatch0 : dLatch port map(clockIn, data3, Q3);
-  dLatch1 : dLatch port map(clockIn, data4, Q4);
+signal not_sum : std_logic;
+signal Q1, Q2 : std_logic := '1';
 
-  data3 <= set and data4;
-  data4 <= trigger and Q2 and Q1 and Q0;
-  clockOut <= Q2 and clockIn after 1 ps;
+begin
+  dLatch : dLatch port map(clockIn, not_carry, Q1);
+  flipFlop : flipFlop port map(clockIn, not_sum, Q1, Q2);
+  
+  not_sum <=  not(S xor compare_filter);
+  not_carry <= not(S and (S xor compare_filter));
+  
+
+  clockOut <= Q2 and Q1 after 1 ps;
+
 end architecture structural;
